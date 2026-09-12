@@ -279,6 +279,19 @@ function applyConfig(cfg) {
 }
 
 function loadConfig() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has("demo")) {
+    applyConfig({
+      creditor_name: "Sportverein Musterstadt 1890 e.V.",
+      creditor_id: "DE98ZZZ09999999999",
+      creditor_iban: "DE89 3704 0044 0532 0130 00",
+      creditor_bic: "GENODED1M01",
+      collection_date: "2026-10-01",
+      sequence_type: "RCUR",
+      default_remittance: "Mitgliedsbeitrag 2026"
+    });
+    return;
+  }
   fetch("/api/config")
     .then(r => r.json())
     .then(serverCfg => {
@@ -539,6 +552,26 @@ document.getElementById("btn-download-protocol").addEventListener("click", () =>
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 });
+
+// URL parameters for demo and automated documentation screenshots
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.has("sample")) {
+  fetch("/api/sample-csv").then(r => r.text()).then(csv => {
+    currentCsvContent = csv;
+    parseCsv(csv);
+    if (urlParams.has("generate")) {
+      setTimeout(() => {
+        const genBtn = document.getElementById("btn-generate");
+        if (genBtn) genBtn.click();
+      }, 500);
+    }
+  });
+}
+if (urlParams.has("invalid")) {
+  const invalidCsv = "Name;IBAN;Beitrag in Euro;Mandatsreferenz;Mandatsdatum\\nMax Mustermann;DE89370400440532013000;60,00;M-00101;2022-03-15\\nSabine Fehlerhaft;DE1234567890;25,00;;";
+  currentCsvContent = invalidCsv;
+  parseCsv(invalidCsv);
+}
 </script>
 </body>
 </html>

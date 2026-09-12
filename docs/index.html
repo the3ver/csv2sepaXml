@@ -1,0 +1,610 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anleitung & Dokumentation | SEPA Lastschrift Generator für Vereine</title>
+  <meta name="description" content="Schritt-für-Schritt Anleitung mit Screenshots zur Erstellung von SEPA Lastschriften im ISO 20022 pain.008.001.08 Standard für Vereine.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #eff6ff;
+      --accent: #059669;
+      --accent-light: #ecfdf5;
+      --danger: #dc2626;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 800;
+      font-size: 18px;
+    }
+    .brand-icon {
+      background: var(--primary);
+      color: white;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 18px;
+    }
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-primary { background: var(--primary-light); color: var(--primary-dark); }
+    .badge-success { background: var(--accent-light); color: var(--accent); }
+    .nav-links { display: flex; align-items: center; gap: 20px; }
+    .nav-link {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--primary); }
+    .btn-github {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #1e293b;
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-github:hover { background: #0f172a; transform: translateY(-1px); }
+
+    /* Hero Section */
+    .hero {
+      max-width: 1040px;
+      margin: 40px auto 30px auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #0f172a;
+      margin-bottom: 14px;
+      line-height: 1.25;
+    }
+    .hero p {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 780px;
+      margin: 0 auto 28px auto;
+    }
+    .hero-features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .feature-tag {
+      background: white;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    /* Container & Layout */
+    .container {
+      max-width: 1040px;
+      margin: 0 auto 80px auto;
+      padding: 0 20px;
+    }
+
+    /* Step Cards */
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 36px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    .step-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .step-number {
+      background: var(--primary);
+      color: white;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .step-title h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+    .step-desc {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* Screenshot frame */
+    .screenshot-box {
+      margin: 24px 0 16px 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
+      box-shadow: var(--shadow-lg);
+      background: #0f172a;
+    }
+    .screenshot-header {
+      background: #f1f5f9;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #64748b;
+    }
+    .browser-dots {
+      display: flex;
+      gap: 5px;
+    }
+    .browser-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #cbd5e1;
+    }
+    .screenshot-box img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Key Points / Tips */
+    .info-box {
+      background: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 18px 0;
+      font-size: 14px;
+      color: #1e3a8a;
+    }
+    .info-box strong { font-weight: 700; color: #1e293b; }
+    .success-box {
+      background: var(--accent-light);
+      border-left: 4px solid var(--accent);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 18px 0;
+      font-size: 14px;
+      color: #065f46;
+    }
+
+    /* Table styling */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 14px;
+    }
+    .spec-table th {
+      background: #f1f5f9;
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 700;
+      color: #334155;
+      border: 1px solid var(--border);
+    }
+    .spec-table td {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      color: #1e293b;
+    }
+    .spec-table tr:nth-child(even) { background: #f8fafc; }
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #e2e8f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #0f172a;
+    }
+
+    /* FAQ Section */
+    .faq-item {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+    .faq-question {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+    .faq-answer {
+      font-size: 14px;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      background: white;
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+    footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 26px; }
+      .step-card { padding: 20px; }
+      .navbar { padding: 12px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <nav class="navbar">
+    <a href="#" class="brand">
+      <div class="brand-icon">⚡</div>
+      <span>csv2sepaXml</span>
+      <span class="badge badge-primary">pain.008.001.08</span>
+    </a>
+    <div class="nav-links">
+      <a href="#schnellstart" class="nav-link">Schnellstart</a>
+      <a href="#anleitung" class="nav-link">Anleitung</a>
+      <a href="#csv-format" class="nav-link">CSV-Format</a>
+      <a href="#faq" class="nav-link">FAQ</a>
+      <a href="https://github.com/the3ver/csv2sepaXml" target="_blank" class="btn-github">
+        <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Header -->
+  <header class="hero">
+    <span class="badge badge-success" style="margin-bottom: 12px; display: inline-block;">Offizieller SEPA EPC-Standard 2024+</span>
+    <h1>SEPA-Lastschrift Generator für Vereine</h1>
+    <p>Erstellen Sie aus Ihrer Mitglieder-CSV bankenkonforme SEPA-Basislastschriften im aktuellen Standard <strong>pain.008.001.08</strong> mit integrierter Echtzeit-Prüfung und offiziellem XSD-Schemacheck.</p>
+
+    <div class="hero-features">
+      <span class="feature-tag">✔ 100% Offline & Datenschutzkonform</span>
+      <span class="feature-tag">✔ Standalone Windows .exe (keine Installation)</span>
+      <span class="feature-tag">✔ Automatische IBAN-Bereinigung</span>
+      <span class="feature-tag">✔ Revisionssicheres Kassenprüf-Protokoll</span>
+      <span class="feature-tag">✔ Offizielles ISO 20022 XSD-Schema</span>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Schnellstart -->
+    <section id="schnellstart" class="step-card" style="border-top: 4px solid var(--primary);">
+      <div class="step-header">
+        <div class="step-number">⚡</div>
+        <div class="step-title">
+          <h2>Schnellstart: Wie starte ich das Programm?</h2>
+          <div class="step-desc">Wählen Sie einfach den für Sie passenden Weg:</div>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 14px;">
+        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 18px;">
+          <h3 style="font-size: 16px; margin-bottom: 6px; color: var(--primary-dark);">Option 1: Als eigenständige Windows-App</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Kein Python erforderlich. Startet direkt per Doppelklick.</p>
+          <p style="font-size: 14px;">Doppelklick auf <code>dist/csv2sepaXml.exe</code></p>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 18px;">
+          <h3 style="font-size: 16px; margin-bottom: 6px; color: var(--primary-dark);">Option 2: Per Windows-Batchdatei</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Öffnet automatisch den Browser auf Port 8080.</p>
+          <p style="font-size: 14px;">Doppelklick auf <code>start_web.bat</code></p>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 18px;">
+          <h3 style="font-size: 16px; margin-bottom: 6px; color: var(--primary-dark);">Option 3: Terminal / CLI-Befehl</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Für Entwickler oder automatisierte Skripte.</p>
+          <p style="font-size: 13px;"><code>python sepa_generator.py --web</code></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Schritt-für-Schritt Anleitung -->
+    <section id="anleitung">
+
+      <!-- Schritt 1 -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <div class="step-title">
+            <h2>1. Vereins- und Gläubigerdaten einstellen</h2>
+            <div class="step-desc">Geben Sie die Stammdaten Ihres Vereins ein. Diese Daten werden für den SEPA-Header und die Gläubiger-Identifikation benötigt.</div>
+          </div>
+        </div>
+
+        <p style="font-size: 14px; color: #334155;">
+          Tragen Sie den <strong>Vereinsnamen</strong>, die offizielle <strong>Gläubiger-ID</strong> (z.B. <code>DE10...</code> oder <code>DE98ZZZ...</code>), die <strong>Vereins-IBAN</strong> und das gewünschte <strong>Fälligkeitsdatum</strong> ein. Mit dem Button <em>„Im Browser speichern“</em> oder über eine lokale <code>config.json</code> merkt sich das System diese Einstellungen dauerhaft für den nächsten Einzug.
+        </p>
+
+        <div class="screenshot-box">
+          <div class="screenshot-header">
+            <div class="browser-dots"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span></div>
+            <span>http://127.0.0.1:8080 - 1. Vereinsdaten (Gläubiger)</span>
+          </div>
+          <img src="images/01_uebersicht_vereinsdaten.png" alt="Eingabe der Vereins- und Gläubigerdaten">
+        </div>
+
+        <div class="info-box">
+          <strong>Tipp zum Sequenztyp:</strong> Für reguläre Jahres- oder Monatsbeiträge wählen Sie <code>RCUR</code> (Wiederkehrend / Folgelastschrift). Bei Neumitgliedern oder erstmaligem Einzug nach neuem Mandat kann auch <code>FRST</code> gewählt werden.
+        </div>
+      </div>
+
+      <!-- Schritt 2 -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <div class="step-title">
+            <h2>2. Mitglieder-CSV importieren</h2>
+            <div class="step-desc">Ziehen Sie Ihre Mitgliederliste einfach per Drag & Drop in das Upload-Feld oder klicken Sie zur Dateiauswahl.</div>
+          </div>
+        </div>
+
+        <p style="font-size: 14px; color: #334155;">
+          Der integrierte CSV-Parser erkennt Spaltenüberschriften flexibel. Typische Varianten wie <code>Beitrag in Euro</code>, <code>Betrag</code>, <code>Mitgliedsbeitrag</code> sowie IBANs mit oder ohne Leerzeichen werden automatisch normalisiert und verarbeitet.
+        </p>
+
+        <div class="screenshot-box">
+          <div class="screenshot-header">
+            <div class="browser-dots"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span></div>
+            <span>http://127.0.0.1:8080 - 2. CSV Upload & Vorlagen</span>
+          </div>
+          <img src="images/02_csv_import_pruefung.png" alt="Mitglieder-CSV importieren und Tabellenprüfung">
+        </div>
+
+        <div class="success-box">
+          <strong>Muster-Vorlage direkt verfügbar:</strong> Haben Sie noch keine CSV vorbereitet? Über den Button <em>„📥 Muster-Vorlage (CSV) herunterladen“</em> erhalten Sie sofort eine fertige CSV-Vorlage mit allen Pflichtfeldern.
+        </div>
+      </div>
+
+      <!-- Schritt 3 -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <div class="step-title">
+            <h2>3. Prüf- und Kontrollansicht (Vorab-Check)</h2>
+            <div class="step-desc">Vor der XML-Erstellung werden alle Datensätze automatisch validiert, sodass keine fehlerhaften Datensätze an Ihre Bank übertragen werden.</div>
+          </div>
+        </div>
+
+        <p style="font-size: 14px; color: #334155;">
+          Sollte eine IBAN einen Tippfehler haben (Prüfziffern-Algorithmus MOD97-10) oder ein Mandatsdatum fehlen, wird die Zeile rot hervorgehoben und der genaue Fehlergrund angezeigt. Über die Filter-Reiter können Sie gezielt zwischen <em>„Alle“</em>, <em>„Nur Gültige“</em> und <em>„Fehlerhafte“</em> wechseln.
+        </p>
+
+        <div class="screenshot-box">
+          <div class="screenshot-header">
+            <div class="browser-dots"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span></div>
+            <span>http://127.0.0.1:8080 - 3. Fehlererkennung in Echtzeit</span>
+          </div>
+          <img src="images/04_fehlerpruefung.png" alt="Echtzeit-Validierung fehlerhafter Datensätze">
+        </div>
+
+        <div class="info-box">
+          <strong>Automatische Bereinigung:</strong> Leerzeichen in IBANs (z.B. <code>DE69 5001 0517...</code>) werden automatisch entfernt. Nur echte syntaktische oder rechnerische Fehler verhindern den Einzug der jeweiligen Einzelposition.
+        </div>
+      </div>
+
+      <!-- Schritt 4 -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-number">4</div>
+          <div class="step-title">
+            <h2>4. SEPA pain.008.001.08 XML & Protokoll generieren</h2>
+            <div class="step-desc">Ein Klick erzeugt die bankenkonforme XML-Datei und ein revisionssicheres Kassenprüf-Protokoll.</div>
+          </div>
+        </div>
+
+        <p style="font-size: 14px; color: #334155;">
+          Klicken Sie auf <strong>„⚡ pain.008.001.08 XML generieren & prüfen“</strong>. Das Programm validiert den erzeugten XML-Code unmittelbar gegen das offizielle ISO 20022 XSD-Schema der Bundesbank / des EPC. Bei erfolgreicher Validierung leuchtet das grüne Banner auf.
+        </p>
+
+        <div class="screenshot-box">
+          <div class="screenshot-header">
+            <div class="browser-dots"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span></div>
+            <span>http://127.0.0.1:8080 - 4. XML Generierung & XSD 100% validiert</span>
+          </div>
+          <img src="images/03_xml_generiert.png" alt="Erfolgreich generierte XML und Download-Buttons">
+        </div>
+
+        <div class="success-box">
+          <strong>Zwei Downloads bereitgestellt:</strong><br>
+          1. <code>sepa_lastschrift_pain008_[DATUM].xml</code> – Laden Sie diese Datei direkt im Online-Banking Ihrer Bank hoch (z.B. Sparkasse, Volksbank, Deutsche Bank, Commerzbank).<br>
+          2. <code>sepa_einzugsprotokoll_[DATUM].txt</code> – Revisionssicheres Textprotokoll für Ihre Kassenprüfer und Vereinsunterlagen mit Kontrollsummen und Hashwert.
+        </div>
+      </div>
+
+    </section>
+
+    <!-- CSV-Format Referenz -->
+    <section id="csv-format" class="step-card">
+      <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 12px; color: #1e293b;">CSV-Spaltenreferenz</h2>
+      <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">
+        Die Spaltenüberschriften können mit Semikolon (<code>;</code>) oder Komma (<code>,</code>) getrennt sein. Groß-/Kleinschreibung spielt keine Rolle.
+      </p>
+
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Spalte</th>
+            <th>Pflichtfeld?</th>
+            <th>Erkannte Bezeichnungen</th>
+            <th>Beispiel / Format</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Name</strong></td>
+            <td><span class="badge badge-primary">Pflicht</span></td>
+            <td><code>Name</code>, <code>Mitglied</code>, <code>Kontoinhaber</code>, <code>Fullname</code></td>
+            <td>Mustermann, Max</td>
+          </tr>
+          <tr>
+            <td><strong>IBAN</strong></td>
+            <td><span class="badge badge-primary">Pflicht</span></td>
+            <td><code>IBAN</code>, <code>Kontonummer</code>, <code>IBAN-Nummer</code></td>
+            <td>DE89 3704 0044 0532 0130 00</td>
+          </tr>
+          <tr>
+            <td><strong>Betrag</strong></td>
+            <td><span class="badge badge-primary">Pflicht</span></td>
+            <td><code>Beitrag in Euro</code>, <code>Betrag</code>, <code>Beitrag</code>, <code>Summe</code></td>
+            <td><code>25,00</code> oder <code>25.00 €</code></td>
+          </tr>
+          <tr>
+            <td><strong>Mandatsreferenz</strong></td>
+            <td><span class="badge badge-primary">Pflicht</span></td>
+            <td><code>Mandatsreferenz</code>, <code>Mandatsnummer</code>, <code>Mitgliedsnummer</code></td>
+            <td>M-2026-0042</td>
+          </tr>
+          <tr>
+            <td><strong>Mandatsdatum</strong></td>
+            <td><span class="badge badge-primary">Pflicht</span></td>
+            <td><code>Mandatsdatum</code>, <code>Unterschriftsdatum</code>, <code>Datum</code></td>
+            <td><code>21.10.2022</code> oder <code>2022-10-21</code></td>
+          </tr>
+          <tr>
+            <td><strong>BIC</strong></td>
+            <td><span class="badge badge-success">Optional (für DE)</span></td>
+            <td><code>BIC</code>, <code>SWIFT</code>, <code>BIC-Code</code></td>
+            <td>BYLADEM1001 (bei dt. Konten nicht nötig)</td>
+          </tr>
+          <tr>
+            <td><strong>Verwendungszweck</strong></td>
+            <td><span class="badge badge-success">Optional</span></td>
+            <td><code>Verwendungszweck</code>, <code>Zweck</code>, <code>Buchungstext</code></td>
+            <td>Mitgliedsbeitrag 2026</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Häufige Fragen (FAQ) -->
+    <section id="faq">
+      <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 20px; color: #1e293b;">Häufige Fragen (FAQ)</h2>
+
+      <div class="faq-item">
+        <div class="faq-question">Ist die BIC für die Zielkonten ein Pflichtfeld?</div>
+        <div class="faq-answer">
+          <strong>Nein!</strong> Gemäß der EU-SEPA-Verordnung („SEPA-Verordnung 260/2012“, IBAN-Only-Regel) ist die Angabe einer BIC für inländische Zahlungskonten (und mittlerweile alle Konten im EWR) nicht mehr erforderlich. Bleibt das BIC-Feld in Ihrer CSV leer, wird es im XML-Standard bankenkonform weggelassen.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Kann das Programm mit Leerzeichen in der IBAN umgehen?</div>
+        <div class="faq-answer">
+          <strong>Ja, problemlos.</strong> IBANs werden vor der Validierung automatisch von Leerzeichen und Bindestrichen bereinigt (z.B. <code>DE69 5001 0517 5418...</code> wird automatisch zu <code>DE69500105175418...</code>).
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Welche Daten speichert das Programm?</div>
+        <div class="faq-answer">
+          Das Programm läuft <strong>vollständig lokal auf Ihrem Rechner</strong>. Es werden zu keinem Zeitpunkt Mitgliederdaten ins Internet übertragen. Die Protokolldatei <code>vereinseinzug.log</code> speichert lediglich technische Statusmeldungen ohne persönliche Namen oder Kontonummern.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Welcher SEPA-Standard wird erzeugt?</div>
+        <div class="faq-answer">
+          Das Programm erzeugt Dateien im aktuellen Standard <strong>pain.008.001.08</strong> (EPC Rulebook 2024+). Dies ist der offizielle Standard, der von deutschen Banken (Sparkassen, Genossenschaftsbanken, Privatbanken) gefordert wird.
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      <strong>csv2sepaXml</strong> – Open-Source SEPA pain.008.001.08 Generator für Vereine.<br>
+      Erstellt unter MIT-Lizenz. Quellcode auf <a href="https://github.com/the3ver/csv2sepaXml" target="_blank">GitHub</a>.
+    </p>
+  </footer>
+
+</body>
+</html>
