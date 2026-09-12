@@ -19,12 +19,17 @@ XSI_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance"
 
 def get_schema_path() -> Path:
     """Return the path to the bundled pain.008.001.08.xsd schema file."""
-    # Check adjacent to package or in repository root
+    import sys
+    candidates = []
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        candidates.append(Path(sys._MEIPASS) / "schema" / "pain.008.001.08.xsd")
+        candidates.append(Path(sys._MEIPASS) / "pain.008.001.08.xsd")
+
     pkg_dir = Path(__file__).parent
-    candidates = [
+    candidates.extend([
         pkg_dir.parent / "schema" / "pain.008.001.08.xsd",
         pkg_dir / "schema" / "pain.008.001.08.xsd",
-    ]
+    ])
     for c in candidates:
         if c.is_file():
             return c

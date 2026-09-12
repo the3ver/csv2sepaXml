@@ -15,7 +15,23 @@ Ein bankenkonformes, leicht verständliches Tool zur Erstellung von SEPA-Basisla
 
 ---
 
-## Installation
+## Windows .EXE (Stand-alone ohne Python)
+
+Das Programm kann als eigenständige Windows-Executable (`csv2sepaXml.exe`) ausgeführt werden – **ohne** dass auf dem Computer Python installiert sein muss!
+
+- **Start per Doppelklick:** Startet sofort die Web-Oberfläche und öffnet Ihren Standardbrowser.
+- **Start per Kommandozeile:** `csv2sepaXml.exe --csv mitglieder.csv --output einzug.xml`
+
+### Eigene .exe erstellen:
+Führen Sie einfach die mitgelieferte Batch-Datei per Doppelklick aus:
+```bash
+build_exe.bat
+```
+Die fertige ausführbare Datei liegt anschließend im Ordner `dist\csv2sepaXml.exe`.
+
+---
+
+## Installation (für Python-Ausführung)
 
 Benötigt wird **Python 3.8+**. Das einzige externe Paket ist `xmlschema` zur Validierung gegen das offizielle XSD-Schema.
 
