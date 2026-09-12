@@ -1,0 +1,5 @@
+Name;IBAN;BIC;Betrag;Mandatsreferenz;Mandatsdatum;Verwendungszweck
+Max Mustermann;DE89370400440532013000;BYLADEM1001;60,00;M-00101;2022-03-15;Jahresbeitrag 2026
+Erika Musterfrau;DE16120300000123456789;;45,50;M-00102;2023-01-10;Mitgliedsbeitrag ermässigt
+Hans Meier;DE44500105175407324931;;120,00;M-00103;2021-07-01;Familienbeitrag 2026
+Anna Schmidt;DE82100777770346822303;;75,00;M-00104;2020-11-20;Mitgliedsbeitrag 2026

@@ -1,0 +1,48 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Environment variables & secrets
+.env
+.env.*
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local configuration with real club credentials
+config.json
+
+# Generated XML direct debit files (prevent accidental bank data commit)
+*.xml
+!schema/pain.008.001.08.xsd

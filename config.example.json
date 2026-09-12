@@ -1,0 +1,10 @@
+{
+  "creditor_name": "Sportverein Musterstadt e.V.",
+  "creditor_id": "DE98ZZZ09999999999",
+  "creditor_iban": "DE89370400440532013000",
+  "creditor_bic": "BYLADEM1001",
+  "collection_date": "2026-10-01",
+  "sequence_type": "RCUR",
+  "default_remittance": "Mitgliedsbeitrag 2026",
+  "batch_booking": true
+}
