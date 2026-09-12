@@ -47,3 +47,6 @@ config.json
 # Generated XML direct debit files (prevent accidental bank data commit)
 *.xml
 !schema/pain.008.001.08.xsd
+
+# Log files
+*.log

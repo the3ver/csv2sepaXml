@@ -11,6 +11,8 @@ from .config import ClubConfig
 from .parser import parse_csv_file, generate_sample_csv
 from .generator import SepaPain008Generator
 from .web import run_web_server
+from .logger import logger
+from .protocol import generate_audit_protocol
 
 
 def main():
@@ -138,11 +140,16 @@ def main():
     if args.remittance: config.default_remittance = args.remittance
 
     print(f"Lese CSV-Datei: {csv_path}")
+    logger.info("Reading CSV file: %s", csv_path.name)
     payments, stats = parse_csv_file(csv_path, default_remittance=config.default_remittance)
 
     if "error" in stats:
+        logger.error("CSV parse error: %s", stats["error"])
         print(f"[FEHLER] {stats['error']}")
         sys.exit(1)
+
+    logger.info("CSV parsed: %d total records, %d valid, %d invalid, delimiter '%s'",
+                stats['total_records'], stats['valid_records'], stats['invalid_records'], stats['delimiter_detected'])
 
     print(f"-> {stats['total_records']} Datensätze gefunden (Trennzeichen: '{stats['delimiter_detected']}')")
     print(f"-> {stats['valid_records']} gültig, {stats['invalid_records']} fehlerhaft")
@@ -156,6 +163,7 @@ def main():
             print(f"  Zeile {p.row_number} ({p.name}, IBAN: {p.iban}):")
             for err in p.errors:
                 print(f"    - {err}")
+            logger.warning("Record row %d invalid: %s", p.row_number, "; ".join(p.errors))
 
     warned_payments = [p for p in payments if p.warnings and p.is_valid]
     if warned_payments:
@@ -167,11 +175,13 @@ def main():
 
     if args.validate_only:
         print("\n[OK] Validierung abgeschlossen.")
+        logger.info("Validation-only check completed.")
         sys.exit(0 if not invalid_payments else 1)
 
     # Validate configuration
     cfg_errors = config.validate()
     if cfg_errors:
+        logger.error("Configuration validation error: %s", "; ".join(cfg_errors))
         print("\n[FEHLER] Vereinsdaten (Gläubiger) unvollständig:")
         for err in cfg_errors:
             print(f"  - {err}")
@@ -180,6 +190,7 @@ def main():
 
     valid_payments = [p for p in payments if p.is_valid]
     if not valid_payments:
+        logger.error("No valid debit transactions available to create XML.")
         print("\n[FEHLER] Keine gültigen Lastschriften zum Erstellen der XML-Datei vorhanden.")
         sys.exit(1)
 
@@ -191,25 +202,37 @@ def main():
         output_file = args.output
 
     print("\nErstelle pain.008.001.08 XML-Datei...")
+    logger.info("Generating pain.008.001.08 XML for %d transactions...", len(valid_payments))
     generator = SepaPain008Generator(config)
     xml_str = generator.generate_xml(valid_payments)
 
     print("Validiere XML gegen ISO 20022 Schema (pain.008.001.08.xsd)...")
     is_valid, schema_errors = generator.validate_xml_schema(xml_str)
     if not is_valid:
+        logger.error("Schema validation failed: %s", "; ".join(schema_errors))
         print("\n[FEHLER] Schemavalidierung fehlgeschlagen:")
         for err in schema_errors:
             print(f"  - {err}")
         sys.exit(1)
 
+    logger.info("Schema validation successful (pain.008.001.08 compliant).")
     print("[OK] Schema-Validierung erfolgreich (100% konform zu pain.008.001.08)!")
 
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(xml_str)
+    logger.info("XML written to %s", output_file.name)
+
+    # Generate and save club audit protocol
+    protocol_file = output_file.with_suffix(".protokoll.txt")
+    protocol_text = generate_audit_protocol(config, payments, stats, xml_filename=output_file.name)
+    with open(protocol_file, "w", encoding="utf-8") as f:
+        f.write(protocol_text)
+    logger.info("Audit protocol written to %s", protocol_file.name)
 
     print(f"\n=======================================================")
     print(f" [ERFOLG] SEPA-XML erfolgreich erstellt:")
-    print(f" Datei:      {output_file.resolve()}")
+    print(f" XML-Datei:  {output_file.resolve()}")
+    print(f" Protokoll:  {protocol_file.resolve()}")
     print(f" Einzüge:    {len(valid_payments)} Posten")
     print(f" Summe:      {stats['total_amount_formatted']}")
     print(f" Fälligkeit: {config.collection_date}")

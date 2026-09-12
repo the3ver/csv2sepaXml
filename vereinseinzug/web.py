@@ -5,6 +5,7 @@ Runs using Python standard library http.server without heavy frameworks.
 
 import json
 import urllib.parse
+from datetime import datetime
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 from typing import Optional, Dict, Any
@@ -13,6 +14,8 @@ from .config import ClubConfig
 from .parser import parse_csv_content, generate_sample_csv
 from .generator import SepaPain008Generator
 from .iban import validate_iban, validate_creditor_id, validate_bic, clean_iban, clean_bic
+from .logger import logger
+from .protocol import generate_audit_protocol
 
 HTML_PAGE = """<!DOCTYPE html>
 <html lang="de">
@@ -236,6 +239,7 @@ HTML_PAGE = """<!DOCTYPE html>
     <div class="btn-group">
       <button class="btn btn-primary" id="btn-generate">⚡ pain.008.001.08 XML generieren & prüfen</button>
       <button class="btn btn-success hidden" id="btn-download-xml">💾 XML-Datei herunterladen</button>
+      <button class="btn btn-secondary hidden" id="btn-download-protocol">📋 Einzugsprotokoll herunterladen</button>
     </div>
 
     <div id="xml-container" class="hidden">
@@ -252,6 +256,7 @@ HTML_PAGE = """<!DOCTYPE html>
 let currentPayments = [];
 let currentCsvContent = "";
 let lastGeneratedXml = "";
+let lastGeneratedProtocol = "";
 
 // Auto-fill collection date to +5 days if empty
 const dateInput = document.getElementById("cfg-collection-date");
@@ -470,14 +475,19 @@ document.getElementById("btn-generate").addEventListener("click", () => {
       banner.className = "banner banner-danger";
       banner.innerHTML = "<span>❌</span><div><strong>Fehler bei der Validierung:</strong><br>" + res.errors.join("<br>") + "</div>";
       document.getElementById("btn-download-xml").classList.add("hidden");
+      document.getElementById("btn-download-protocol").classList.add("hidden");
       document.getElementById("xml-container").classList.add("hidden");
     } else {
       lastGeneratedXml = res.xml;
+      lastGeneratedProtocol = res.protocol || "";
       banner.className = "banner banner-success";
       banner.innerHTML = `<span>✅</span><div><strong>Erfolgreich generiert und XSD-geprüft!</strong><br>${res.valid_records} Lastschriften im Gesamtwert von ${res.total_amount_formatted} wurden in pain.008.001.08 XML kodiert.</div>`;
       document.getElementById("btn-download-xml").classList.remove("hidden");
+      if (lastGeneratedProtocol) {
+        document.getElementById("btn-download-protocol").classList.remove("hidden");
+      }
       document.getElementById("xml-container").classList.remove("hidden");
-      document.getElementById("xml-preview").innerText = res.xml.slice(0, 1500) + (res.xml.length > 1500 ? "\\n\\n... [weitere Zeilen im Download enthalten] ..." : "");
+      document.getElementById("xml-preview").innerText = res.xml.slice(0, 1500) + (res.xml.length > 1500 ? "\n\n... [weitere Zeilen im Download enthalten] ..." : "");
     }
   });
 });
@@ -490,6 +500,20 @@ document.getElementById("btn-download-xml").addEventListener("click", () => {
   a.href = url;
   const today = new Date().toISOString().split("T")[0];
   a.download = `sepa_lastschrift_pain008_${today}.xml`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById("btn-download-protocol").addEventListener("click", () => {
+  if (!lastGeneratedProtocol) return;
+  const blob = new Blob([lastGeneratedProtocol], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  const today = new Date().toISOString().split("T")[0];
+  a.download = `sepa_einzugsprotokoll_${today}.txt`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -590,6 +614,7 @@ class SepaHttpHandler(BaseHTTPRequestHandler):
                 # Validate config
                 cfg_errors = config.validate()
                 if cfg_errors:
+                    logger.error("Web API: Configuration error: %s", "; ".join(cfg_errors))
                     self.send_json(200, {"success": False, "errors": cfg_errors})
                     return
 
@@ -603,22 +628,35 @@ class SepaHttpHandler(BaseHTTPRequestHandler):
                     self.send_json(200, {"success": False, "errors": ["Keine gültigen Zahlungssätze vorhanden. Bitte IBAN und Pflichtfelder prüfen."]})
                     return
 
+                logger.info("Web API: Generating XML for %d payments (sum: %s)...",
+                            len(valid_payments), stats.get("total_amount_formatted", "0,00"))
                 generator = SepaPain008Generator(config)
                 xml_str = generator.generate_xml(valid_payments)
 
                 # Validate against official XSD schema
                 is_valid, xsd_errors = generator.validate_xml_schema(xml_str)
                 if not is_valid:
+                    logger.error("Web API: XSD schema validation failed: %s", "; ".join(xsd_errors))
                     self.send_json(200, {"success": False, "errors": [f"XSD Schema-Fehler: {e}" for e in xsd_errors]})
                     return
+
+                logger.info("Web API: XML generation and XSD schema validation successful.")
+
+                # Generate audit protocol
+                protocol_str = generate_audit_protocol(
+                    config, payments, stats,
+                    xml_filename=f"sepa_lastschrift_pain008_{datetime.now().strftime('%Y%m%d')}.xml"
+                )
 
                 self.send_json(200, {
                     "success": True,
                     "xml": xml_str,
+                    "protocol": protocol_str,
                     "valid_records": len(valid_payments),
                     "total_amount_formatted": stats.get("total_amount_formatted", "0,00 €"),
                 })
             except Exception as e:
+                logger.error("Web API: Exception during XML generation: %s", str(e))
                 self.send_json(200, {"success": False, "errors": [str(e)]})
 
         else:
