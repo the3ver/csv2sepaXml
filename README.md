@@ -2,6 +2,7 @@
 
 [![GitHub Pages](https://img.shields.io/badge/Dokumentation-GitHub%20Pages-2563eb?style=for-the-badge)](https://the3ver.github.io/csv2sepaXml/)
 [![SEPA ISO 20022](https://img.shields.io/badge/SEPA-pain.008.001.08-059669?style=for-the-badge)](https://www.europeanpaymentscouncil.eu/)
+[![License: MIT](https://img.shields.io/badge/Lizenz-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
 Ein bankenkonformes, leicht verständliches Tool zur Erstellung von SEPA-Basislastschriften im aktuellen Standard **pain.008.001.08** (ISO 20022 SEPA Direct Debit V08) aus einer Mitglieder-CSV-Datei (z.B. Export aus Excel).
 
@@ -156,3 +157,10 @@ Die integrierte Testsuite prüft IBAN-Prüfziffern, Parser-Sonderfälle und die 
 ```bash
 python -m unittest discover -s tests -v
 ```
+
+---
+
+## Lizenz
+
+Dieses Projekt ist unter der **[MIT-Lizenz](LICENSE)** lizenziert – freie Nutzung für Vereine, Schatzmeister und Entwickler.
+
