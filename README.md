@@ -1,7 +1,7 @@
 # SEPA-Lastschrift Generator (pain.008.001.08) für Vereine
 
 [![GitHub Pages](https://img.shields.io/badge/Dokumentation-GitHub%20Pages-2563eb?style=for-the-badge)](https://the3ver.github.io/csv2sepaXml/)
-[![Version](https://img.shields.io/badge/Version-0.3.0-orange?style=for-the-badge)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-0.3.1-orange?style=for-the-badge)](CHANGELOG.md)
 [![SEPA ISO 20022](https://img.shields.io/badge/SEPA-pain.008.001.08-059669?style=for-the-badge)](https://www.europeanpaymentscouncil.eu/)
 [![License: MIT](https://img.shields.io/badge/Lizenz-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
@@ -29,6 +29,7 @@ Ein bankenkonformes, leicht verständliches Tool zur Erstellung von SEPA-Basisla
 Das Programm kann als eigenständige Windows-Executable (`csv2sepaXml.exe`) ausgeführt werden – **ohne** dass auf dem Computer Python installiert sein muss!
 
 - **Start per Doppelklick:** Startet sofort die Web-Oberfläche und öffnet Ihren Standardbrowser.
+- **Bequemer 1-Klick-Start:** Über `start_app.bat` (schaltet Windows SmartScreen automatisch stumm).
 - **Start per Kommandozeile:** `csv2sepaXml.exe --csv mitglieder.csv --output einzug.xml`
 
 ### Eigene .exe erstellen:
@@ -36,7 +37,31 @@ Führen Sie einfach die mitgelieferte Batch-Datei per Doppelklick aus:
 ```bash
 build_exe.bat
 ```
-Die fertige ausführbare Datei liegt anschließend im Ordner `dist\csv2sepaXml.exe`.
+Die fertige ausführbare Datei liegt anschließend im Ordner `dist\csv2sepaXml.exe` (inkl. digitaler Signatur und `start_app.bat`).
+
+---
+
+## 🛡️ Windows-Sicherheitshinweis („Unbekannte App / SmartScreen“)
+
+Beim ersten Start von aus dem Internet oder von GitHub heruntergeladenen `.exe`-Dateien zeigt Windows 10/11 ein blaues Hinweisfenster an:
+> **„Der Computer wurde durch Windows geschützt“**  
+> *„Von Microsoft Defender SmartScreen wurde der Start einer unbekannten App verhindert. Die Ausführung dieser App stellt u. U. ein Risiko für den PC dar.“*
+
+### Warum erscheint dieser Hinweis?
+Dies ist das reguläre Standardverhalten von Windows bei unabhängigen Programmen und Open-Source-Software: Microsoft stuft Programme so lange als „unbekannt“ ein, bis sie entweder hunderttausendfach heruntergeladen wurden oder mit einem sehr teuren kommerziellen EV-Zertifikat (ca. 400–800 € pro Jahr) digital signiert sind.
+
+Da `csv2sepaXml` ein freies Open-Source-Projekt für Vereine ist, verzichten wir bewusst auf diese hohen jährlichen Kosten. Das Programm ist **vollständig quelloffen, arbeitet 100 % offline auf Ihrem PC und überträgt keinerlei Daten**.
+
+### So starten Sie das Programm in wenigen Sekunden:
+
+* **Weg 1: Direkt im Hinweisfenster (1 Klick mehr)**  
+  Klicken Sie auf den Textlink **„Weitere Informationen“** und danach auf die Schaltfläche **„Trotzdem ausführen“**.
+* **Weg 2: Mitgelieferte `start_app.bat` nutzen (Empfohlen)**  
+  Starten Sie einfach die neben der Datei liegende `start_app.bat`. Diese entfernt automatisch das Windows-Download-Attribut (*Mark of the Web*) und öffnet das Programm direkt.
+* **Weg 3: Dauerhafte Freigabe in Windows**  
+  Rechtsklick auf `csv2sepaXml.exe` ➔ **Eigenschaften** ➔ ganz unten bei *Sicherheit* das Häkchen bei **„Zulassen“** (Unblock) setzen ➔ **OK**.
+* **Weg 4: Start über Python (`start_web.bat`)**  
+  Wenn Python vorhanden ist, einfach `start_web.bat` doppelklicken – hierbei greift Windows SmartScreen grundsätzlich nicht.
 
 ---
 

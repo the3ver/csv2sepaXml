@@ -7,6 +7,18 @@ und dieses Projekt folgt den Richtlinien von [Semantic Versioning](https://semve
 
 ---
 
+## [0.3.1] - 2026-09-12
+
+### Behoben & Verbessert
+- **Vermeidung von Windows 11 SmartScreen & „Unbekannter Herausgeber“-Warnungen**:
+  - **1-Klick Starter (`start_app.bat`)**: Bequemes Starterskript direkt neben der `.exe`, das den Windows-Download-Hinweis (*Mark of the Web* / `Zone.Identifier`) per `Unblock-File` automatisch entfernt und das Programm ohne störenden Dialog öffnet.
+  - **Digitale Authenticode-Signierung (`scripts/sign_exe.ps1`)**: Signiert `dist\csv2sepaXml.exe` automatisch mit Authenticode-Zertifikat und DigiCert-Zeitstempel. Datei-Eigenschaften weisen den Herausgeber `the3ver` aus.
+  - **PyInstaller-Härtung**: Kompilierung mit `--noupx`, um heuristische Fehlalarme von Antivirenprogrammen auszuschließen.
+  - **Begleitdateien in `dist/`**: Automatisches Bereitstellen von `start_app.bat`, `config.example.json` und `sample_mitglieder.csv` für sofortige Einsatzbereitschaft.
+  - **Dokumentation**: Ausführliche Hilfestellung mit Dialog-Illustration in der Online-Anleitung (`docs/index.html`) und im `README.md`.
+
+---
+
 ## [0.3.0] - 2026-09-12
 
 ### Hinzugefügt

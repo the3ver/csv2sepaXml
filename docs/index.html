@@ -327,7 +327,7 @@
       <div class="brand-icon">⚡</div>
       <span>csv2sepaXml</span>
       <span class="badge badge-primary">pain.008.001.08</span>
-      <span class="badge" style="background:#fef3c7; color:#b45309;">v0.3.0</span>
+      <span class="badge" style="background:#fef3c7; color:#b45309;">v0.3.1</span>
     </a>
     <div class="nav-links">
       <a href="#schnellstart" class="nav-link">Schnellstart</a>
@@ -368,21 +368,72 @@
           <div class="step-desc">Wählen Sie einfach den für Sie passenden Weg:</div>
         </div>
       </div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 14px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 14px;">
         <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 18px;">
-          <h3 style="font-size: 16px; margin-bottom: 6px; color: var(--primary-dark);">Option 1: Als eigenständige Windows-App</h3>
-          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Kein Python erforderlich. Startet direkt per Doppelklick.</p>
-          <p style="font-size: 14px;">Doppelklick auf <code>dist/csv2sepaXml.exe</code></p>
+          <h3 style="font-size: 15px; margin-bottom: 6px; color: var(--primary-dark);">Option 1: 1-Klick Starter (Empfohlen)</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Entfernt den Windows-Download-Hinweis automatisch und startet sofort.</p>
+          <p style="font-size: 13px;">Doppelklick auf <code>start_app.bat</code></p>
         </div>
         <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 18px;">
-          <h3 style="font-size: 16px; margin-bottom: 6px; color: var(--primary-dark);">Option 2: Per Windows-Batchdatei</h3>
-          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Öffnet automatisch den Browser auf Port 8080.</p>
-          <p style="font-size: 14px;">Doppelklick auf <code>start_web.bat</code></p>
+          <h3 style="font-size: 15px; margin-bottom: 6px; color: var(--primary-dark);">Option 2: Standalone .EXE</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Kein Python nötig. Direkte Ausführung der Windows-Binärdatei.</p>
+          <p style="font-size: 13px;">Doppelklick auf <code>csv2sepaXml.exe</code></p>
         </div>
         <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 18px;">
-          <h3 style="font-size: 16px; margin-bottom: 6px; color: var(--primary-dark);">Option 3: Terminal / CLI-Befehl</h3>
-          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Für Entwickler oder automatisierte Skripte.</p>
-          <p style="font-size: 13px;"><code>python sepa_generator.py --web</code></p>
+          <h3 style="font-size: 15px; margin-bottom: 6px; color: var(--primary-dark);">Option 3: Python-Skript</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Für Entwickler und Administratoren mit installiertem Python.</p>
+          <p style="font-size: 13px;">Doppelklick auf <code>start_web.bat</code></p>
+        </div>
+      </div>
+
+      <!-- Windows 11 SmartScreen Hilfe-Box -->
+      <div style="background: #f0f7ff; border: 1px solid #bfdbfe; border-left: 5px solid #2563eb; border-radius: 8px; padding: 20px; margin-top: 24px;">
+        <div style="display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap;">
+          <div style="background: #2563eb; color: white; border-radius: 8px; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">
+            🛡️
+          </div>
+          <div style="flex: 1; min-width: 260px;">
+            <h3 style="font-size: 16px; font-weight: 800; color: #1e3a8a; margin-bottom: 6px;">
+              Windows-Hinweis: „Der Computer wurde durch Windows geschützt (SmartScreen)“
+            </h3>
+            <p style="font-size: 13.5px; color: #334155; margin-bottom: 14px; line-height: 1.55;">
+              Erscheint beim ersten Start ein blauer Windows Defender-Warnhinweis? <strong>Das ist bei freier Vereins- und Open-Source-Software normal.</strong> Microsoft stuft Programme so lange als „unbekannt“ ein, bis sie über ein extrem teures kommerzielles Firmen-Zertifikat (ca. 400–800 € jährlich) signiert sind. Die Anwendung ist 100% quelloffen, arbeitet rein offline auf Ihrem PC und enthält keine Schadsoftware.
+            </p>
+
+            <!-- Dialog Mockup & Steps -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; align-items: start;">
+              <!-- Mini SmartScreen Visual Mock -->
+              <div style="background: #004e8c; color: white; border-radius: 6px; padding: 14px; font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 12px; box-shadow: var(--shadow);">
+                <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Der Computer wurde durch Windows geschützt</div>
+                <div style="opacity: 0.9; margin-bottom: 10px; line-height: 1.4;">Von Microsoft Defender SmartScreen wurde der Start einer unbekannten App verhindert...</div>
+                <div style="background: rgba(255,255,255,0.12); padding: 8px; border-radius: 4px; margin-bottom: 10px;">
+                  <div>App: <strong>csv2sepaXml.exe</strong></div>
+                  <div>Herausgeber: the3ver (OpenSource)</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="text-decoration: underline; color: #93c5fd; font-weight: 600;">1. Weitere Informationen</span>
+                  <span style="background: white; color: #004e8c; font-weight: 700; padding: 4px 8px; border-radius: 3px; font-size: 11px;">2. Trotzdem ausführen</span>
+                </div>
+              </div>
+
+              <!-- Lösungswege -->
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="background: white; border: 1px solid #bfdbfe; border-radius: 6px; padding: 10px 12px; font-size: 13px;">
+                  <strong style="color: #1e40af;">Weg A: Direkt im Hinweisfenster (Empfohlen)</strong><br>
+                  Auf <u>„Weitere Informationen“</u> klicken ➔ anschließend auf <strong>„Trotzdem ausführen“</strong>.
+                </div>
+                <div style="background: white; border: 1px solid #bfdbfe; border-radius: 6px; padding: 10px 12px; font-size: 13px;">
+                  <strong style="color: #059669;">Weg B: start_app.bat nutzen</strong><br>
+                  Doppelklick auf <code>start_app.bat</code> entfernt die Download-Blockade automatisch.
+                </div>
+                <div style="background: white; border: 1px solid #bfdbfe; border-radius: 6px; padding: 10px 12px; font-size: 13px;">
+                  <strong style="color: #475569;">Weg C: Dauerhaft in den Datei-Eigenschaften</strong><br>
+                  Rechtsklick auf <code>csv2sepaXml.exe</code> ➔ <em>Eigenschaften</em> ➔ Haken bei <strong>„Zulassen“</strong> (Unblock) ➔ OK.
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </section>
@@ -587,6 +638,13 @@
         <div class="faq-question">Welche Daten speichert das Programm?</div>
         <div class="faq-answer">
           Das Programm läuft <strong>vollständig lokal auf Ihrem Rechner</strong>. Es werden zu keinem Zeitpunkt Mitgliederdaten ins Internet übertragen. Die Protokolldatei <code>vereinseinzug.log</code> speichert lediglich technische Statusmeldungen ohne persönliche Namen oder Kontonummern.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Warum zeigt Windows beim ersten Start „Der Computer wurde durch Windows geschützt“?</div>
+        <div class="faq-answer">
+          Microsoft Defender SmartScreen prüft heruntergeladene Dateien aus dem Internet (über das Dateimerkmal <em>Mark of the Web</em>). Da wir als freies Vereinsprojekt kein kostspieliges kommerzielles Microsoft-Zertifikat für Hunderte Euro pro Jahr erwerben, stuft Windows die App zunächst als „unbekannt“ ein. Sie können die Ausführung gefahrlos freigeben: Einfach auf <strong>„Weitere Informationen“</strong> und dann <strong>„Trotzdem ausführen“</strong> klicken, oder die mitgelieferte <code>start_app.bat</code> verwenden.
         </div>
       </div>
 
