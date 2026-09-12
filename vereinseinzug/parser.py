@@ -94,17 +94,43 @@ def detect_delimiter(sample_text: str) -> str:
 
 def find_column_map(headers: List[str]) -> Dict[str, int]:
     """
-    Map canonical field names to column indices in headers.
+    Map canonical field names to column indices in headers using exact and fuzzy matching.
     """
     norm_headers = [normalize_header(h) for h in headers]
     col_map: Dict[str, int] = {}
+    assigned_indices = set()
 
+    # Pass 1: exact alias matches
     for canonical, aliases in COLUMN_ALIASES.items():
         for alias in aliases:
             norm_alias = normalize_header(alias)
             if norm_alias in norm_headers:
-                col_map[canonical] = norm_headers.index(norm_alias)
-                break
+                idx = norm_headers.index(norm_alias)
+                if idx not in assigned_indices:
+                    col_map[canonical] = idx
+                    assigned_indices.add(idx)
+                    break
+
+    # Pass 2: substring / fuzzy matching for variations (e.g. 'Beitrag in Euro', 'IBAN-Nr', etc.)
+    patterns = [
+        ("mandate_date", lambda h: ("mandat" in h and ("dat" in h or "zeit" in h)) or "unterschriftsdat" in h),
+        ("mandate_id", lambda h: "mandat" in h or "mitgliedsnr" in h or "mndtid" in h),
+        ("amount", lambda h: any(x in h for x in ["betrag", "beitrag", "amount", "summe", "gebuehr", "kosten", "eur", "preis"])),
+        ("iban", lambda h: "iban" in h or "konto" in h),
+        ("bic", lambda h: "bic" in h or "swift" in h),
+        ("first_name", lambda h: "vorname" in h or "firstname" in h),
+        ("last_name", lambda h: "nachname" in h or "lastname" in h or "familienname" in h),
+        ("name", lambda h: any(x in h for x in ["name", "mitglied", "inhaber", "person"]) and "vorname" not in h and "nachname" not in h),
+        ("remittance", lambda h: any(x in h for x in ["verwend", "zweck", "text", "bemerk"])),
+    ]
+
+    for canonical, matcher in patterns:
+        if canonical not in col_map:
+            for idx, h in enumerate(norm_headers):
+                if idx not in assigned_indices and matcher(h):
+                    col_map[canonical] = idx
+                    assigned_indices.add(idx)
+                    break
 
     return col_map
 

@@ -360,27 +360,35 @@ function parseCsv(content) {
   })
   .then(r => r.json())
   .then(data => {
-    if (data.error) {
-      alert("Fehler beim Einlesen der CSV: " + data.error);
+    const errorMsg = data.error || (data.stats && data.stats.error);
+    if (errorMsg) {
+      alert("Fehler beim Einlesen der CSV:\n\n" + errorMsg);
       return;
     }
-    currentPayments = data.payments;
+    if (!data.stats || data.stats.total_records === undefined) {
+      alert("Fehler: Unerwartetes Antwortformat vom Server.");
+      return;
+    }
+    currentPayments = data.payments || [];
     updateStats(data.stats);
     renderTable(currentPayments);
     document.getElementById("preview-card").style.display = "block";
     document.getElementById("generate-card").style.display = "block";
+  })
+  .catch(err => {
+    alert("Verbindungsfehler zum lokalen Server: " + err);
   });
 }
 
 function updateStats(stats) {
-  document.getElementById("stat-total").innerText = stats.total_records;
-  document.getElementById("stat-valid").innerText = stats.valid_records;
-  document.getElementById("stat-invalid").innerText = stats.invalid_records;
-  document.getElementById("stat-amount").innerText = stats.total_amount_formatted;
+  document.getElementById("stat-total").innerText = stats.total_records ?? 0;
+  document.getElementById("stat-valid").innerText = stats.valid_records ?? 0;
+  document.getElementById("stat-invalid").innerText = stats.invalid_records ?? 0;
+  document.getElementById("stat-amount").innerText = stats.total_amount_formatted ?? "0,00 €";
 
-  document.getElementById("count-all").innerText = stats.total_records;
-  document.getElementById("count-valid").innerText = stats.valid_records;
-  document.getElementById("count-invalid").innerText = stats.invalid_records;
+  document.getElementById("count-all").innerText = stats.total_records ?? 0;
+  document.getElementById("count-valid").innerText = stats.valid_records ?? 0;
+  document.getElementById("count-invalid").innerText = stats.invalid_records ?? 0;
 }
 
 let activeFilter = "all";
@@ -550,6 +558,9 @@ class SepaHttpHandler(BaseHTTPRequestHandler):
                 csv_content = data.get("csv_content", "")
                 default_rem = data.get("default_remittance", "Mitgliedsbeitrag")
                 payments, stats = parse_csv_content(csv_content, default_remittance=default_rem)
+                if "error" in stats:
+                    self.send_json(200, {"error": stats["error"], "payments": [], "stats": stats})
+                    return
                 res = {
                     "payments": [p.to_dict() for p in payments],
                     "stats": stats
