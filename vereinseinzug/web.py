@@ -389,7 +389,7 @@ function parseCsv(content) {
   .then(data => {
     const errorMsg = data.error || (data.stats && data.stats.error);
     if (errorMsg) {
-      alert("Fehler beim Einlesen der CSV:\n\n" + errorMsg);
+      alert("Fehler beim Einlesen der CSV:\\n\\n" + errorMsg);
       return;
     }
     if (!data.stats || data.stats.total_records === undefined) {
@@ -507,7 +507,7 @@ document.getElementById("btn-generate").addEventListener("click", () => {
         document.getElementById("btn-download-protocol").classList.remove("hidden");
       }
       document.getElementById("xml-container").classList.remove("hidden");
-      document.getElementById("xml-preview").innerText = res.xml.slice(0, 1500) + (res.xml.length > 1500 ? "\n\n... [weitere Zeilen im Download enthalten] ..." : "");
+      document.getElementById("xml-preview").innerText = res.xml.slice(0, 1500) + (res.xml.length > 1500 ? "\\n\\n... [weitere Zeilen im Download enthalten] ..." : "");
     }
   });
 });
