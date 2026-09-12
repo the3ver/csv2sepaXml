@@ -7,7 +7,7 @@ import sys
 from datetime import date, timedelta
 from pathlib import Path
 
-from .config import ClubConfig
+from .config import ClubConfig, find_config_file, get_default_config_path, get_app_dir
 from .parser import parse_csv_file, generate_sample_csv
 from .generator import SepaPain008Generator
 from .web import run_web_server
@@ -51,8 +51,8 @@ def main():
     parser.add_argument(
         "--config",
         type=Path,
-        default=Path("config.json"),
-        help="Pfad zur Vereins-Konfigurationsdatei (Standard: config.json)",
+        default=None,
+        help="Pfad zur Vereins-Konfigurationsdatei (Standard: config.json neben der .exe oder im Arbeitsverzeichnis)",
     )
     parser.add_argument(
         "--output", "-o",
@@ -99,7 +99,7 @@ def main():
 
     # 2. Action: Init config
     if args.init_config:
-        target_path = Path(args.init_config)
+        target_path = Path(args.init_config) if args.init_config != "config.json" else get_default_config_path("config.json")
         cfg = ClubConfig(
             creditor_name="Sportverein Musterstadt e.V.",
             creditor_id="DE98ZZZ09999999999",
@@ -132,8 +132,10 @@ def main():
         sys.exit(1)
 
     # Load or build config
-    if args.config.is_file():
-        config = ClubConfig.load_from_file(args.config)
+    cfg_file = args.config if args.config else find_config_file("config.json")
+    if cfg_file and cfg_file.is_file():
+        print(f"Lade Vereinsdaten aus: {cfg_file.resolve()}")
+        config = ClubConfig.load_from_file(cfg_file)
     else:
         config = ClubConfig()
 

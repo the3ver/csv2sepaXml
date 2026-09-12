@@ -10,7 +10,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 from typing import Optional, Dict, Any
 
-from .config import ClubConfig
+from .config import ClubConfig, find_config_file, get_default_config_path
 from .parser import parse_csv_content, generate_sample_csv
 from .generator import SepaPain008Generator
 from .iban import validate_iban, validate_creditor_id, validate_bic, clean_iban, clean_bic
@@ -111,7 +111,7 @@ HTML_PAGE = """<!DOCTYPE html>
 <body>
 <div class="container">
   <header>
-    <div class="header-badge">EPC SEPA Standard 2024+ (pain.008.001.08) <span style="opacity: 0.85; font-weight: normal; margin-left: 6px;">v0.2.0</span></div>
+    <div class="header-badge">EPC SEPA Standard 2024+ (pain.008.001.08) <span style="opacity: 0.85; font-weight: normal; margin-left: 6px;">v0.3.0</span></div>
     <h1>SEPA-Lastschrift Generator für Vereine</h1>
     <p class="subtitle">Erstellen Sie aus einer Mitglieder-CSV bankenkonforme SEPA-Basislastschriften mit integrierter XSD-Validierung.</p>
   </header>
@@ -607,12 +607,14 @@ class SepaHttpHandler(BaseHTTPRequestHandler):
             self.wfile.write(generate_sample_csv().encode("utf-8-sig"))
 
         elif path == "/api/config":
-            cfg_file = Path("config.json")
-            if cfg_file.is_file():
+            cfg_file = find_config_file("config.json")
+            if cfg_file and cfg_file.is_file():
                 try:
+                    logger.info("Web API: Lade Konfiguration aus %s", cfg_file)
                     cfg = ClubConfig.load_from_file(cfg_file)
                     data = cfg.to_dict()
-                except Exception:
+                except Exception as e:
+                    logger.warning("Web API: Fehler beim Laden von %s: %s", cfg_file, e)
                     data = {}
             else:
                 data = {}
@@ -661,9 +663,12 @@ class SepaHttpHandler(BaseHTTPRequestHandler):
             try:
                 data = json.loads(body.decode("utf-8"))
                 cfg = ClubConfig.from_dict(data)
-                cfg.save_to_file(Path("config.json"))
-                self.send_json(200, {"success": True})
+                target_path = get_default_config_path("config.json")
+                cfg.save_to_file(target_path)
+                logger.info("Web API: Konfiguration erfolgreich in %s gespeichert.", target_path)
+                self.send_json(200, {"success": True, "saved_to": str(target_path)})
             except Exception as e:
+                logger.error("Web API: Fehler beim Speichern der Konfiguration: %s", str(e))
                 self.send_json(400, {"error": str(e)})
 
         elif path == "/api/generate-xml":

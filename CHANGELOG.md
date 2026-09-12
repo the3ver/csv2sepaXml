@@ -1,9 +1,19 @@
-﻿# Changelog
+# Changelog
 
 Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/)
 und dieses Projekt folgt den Richtlinien von [Semantic Versioning](https://semver.org/lang/de/).
+
+---
+
+## [0.3.0] - 2026-09-12
+
+### Hinzugefügt
+- **Automatische Erkennung von `config.json` neben der `.exe`**:
+  - Liegt eine `config.json` direkt im Verzeichnis der ausführbaren Datei (`csv2sepaXml.exe`), werden die Vereins- und Gläubigerdaten automatisch daraus geladen – selbst wenn das Programm aus einem anderen Arbeitsverzeichnis oder per Desktop-Verknüpfung gestartet wird.
+  - Das Speichern der Konfiguration im Web-Interface (`Im Browser speichern`) sichert die Einstellungen nun ebenfalls automatisch direkt neben der `.exe`.
+  - Entwickler-Fallback: Aufrufe per Skript (`python sepa_generator.py`) durchsuchen weiterhin wie gewohnt das aktuelle Arbeitsverzeichnis.
 
 ---
 

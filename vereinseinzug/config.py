@@ -90,7 +90,7 @@ class ClubConfig:
     @classmethod
     def load_from_file(cls, filepath: Path) -> "ClubConfig":
         """Load configuration from JSON file."""
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(filepath, "r", encoding="utf-8-sig") as f:
             data = json.load(f)
         return cls.from_dict(data)
 
@@ -99,3 +99,53 @@ def re_clean_str(val: Any) -> str:
     if not val:
         return ""
     return str(val).strip()
+
+
+def get_app_dir() -> Path:
+    """
+    Get the directory containing the running executable or main script.
+    When running as a PyInstaller bundle (.exe), sys.executable points to the .exe file.
+    When running as a normal Python script, it resolves the main script directory.
+    """
+    import sys
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+
+    main_mod = sys.modules.get("__main__")
+    if main_mod and getattr(main_mod, "__file__", None):
+        return Path(main_mod.__file__).resolve().parent
+
+    return Path.cwd()
+
+
+def find_config_file(filename: str = "config.json") -> Optional[Path]:
+    """
+    Search for a configuration file:
+    1. Directly next to the executable / application directory (get_app_dir)
+    2. In the current working directory (Path.cwd())
+    Returns Path if found, otherwise None.
+    """
+    # 1. Look directly next to the .exe / main script
+    app_dir_path = get_app_dir() / filename
+    if app_dir_path.is_file():
+        return app_dir_path
+
+    # 2. Look in current working directory
+    cwd_path = Path.cwd() / filename
+    if cwd_path.is_file():
+        return cwd_path
+
+    return None
+
+
+def get_default_config_path(filename: str = "config.json") -> Path:
+    """
+    Return the path where config.json should be read from or written to:
+    If an existing config.json is found (next to exe or in CWD), returns that path.
+    Otherwise, defaults to placing it directly next to the executable / application directory.
+    """
+    existing = find_config_file(filename)
+    if existing:
+        return existing
+    return get_app_dir() / filename
+
