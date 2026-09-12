@@ -180,11 +180,12 @@ HTML_PAGE = """<!DOCTYPE html>
   <!-- 2. CSV UPLOAD -->
   <div class="card">
     <div class="card-title">2. Mitglieder-CSV importieren</div>
-    <div class="dropzone" id="dropzone">
+    <div class="dropzone" id="dropzone" style="position: relative; overflow: hidden;">
+      <input type="file" id="file-input" accept=".csv,text/csv,text/plain" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;">
       <div class="dropzone-icon">📁</div>
-      <p style="font-weight: 700; color: #1e293b;">CSV-Datei hier ablegen oder klicken zum Auswählen</p>
-      <p>Unterstützt Spalten wie Name, IBAN, BIC, Betrag, Mandatsreferenz, Mandatsdatum, Verwendungszweck (Semikolon oder Komma).</p>
-      <input type="file" id="file-input" accept=".csv,text/csv,text/plain" style="display:none;">
+      <p style="font-weight: 700; color: #1e293b; font-size: 15px;">CSV-Datei hier ablegen oder klicken zum Auswählen</p>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Unterstützt Spalten wie Name, IBAN, BIC, Betrag in Euro, Mandatsreferenz, Mandatsdatum.</p>
+      <span class="btn btn-primary" style="pointer-events: none;">📄 Datei vom Computer auswählen</span>
     </div>
     <div class="btn-group">
       <button class="btn btn-secondary" id="btn-download-template">📥 Muster-Vorlage (CSV) herunterladen</button>
@@ -319,16 +320,17 @@ function getConfig() {
 const dropzone = document.getElementById("dropzone");
 const fileInput = document.getElementById("file-input");
 
-dropzone.addEventListener("click", () => fileInput.click());
-dropzone.addEventListener("dragover", (e) => { e.preventDefault(); dropzone.classList.add("dragover"); });
-dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
-dropzone.addEventListener("drop", (e) => {
-  e.preventDefault();
-  dropzone.classList.remove("dragover");
-  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
-});
+fileInput.addEventListener("dragenter", () => dropzone.classList.add("dragover"));
+fileInput.addEventListener("dragover", (e) => { e.preventDefault(); dropzone.classList.add("dragover"); });
+fileInput.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
+fileInput.addEventListener("drop", () => dropzone.classList.remove("dragover"));
+
 fileInput.addEventListener("change", (e) => {
-  if (e.target.files.length) handleFile(e.target.files[0]);
+  if (e.target.files && e.target.files.length) {
+    handleFile(e.target.files[0]);
+    // Reset value so selecting the same file again triggers change event
+    fileInput.value = "";
+  }
 });
 
 function handleFile(file) {
