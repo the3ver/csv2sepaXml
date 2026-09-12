@@ -326,6 +326,9 @@ function getConfig() {
 }
 
 // Dropzone handling
+const dropzone = document.getElementById("dropzone");
+const fileInput = document.getElementById("file-input");
+
 fileInput.addEventListener("dragenter", () => dropzone.classList.add("dragover"));
 fileInput.addEventListener("dragover", (e) => { e.preventDefault(); dropzone.classList.add("dragover"); });
 fileInput.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
