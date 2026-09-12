@@ -605,14 +605,23 @@ class SepaHttpHandler(BaseHTTPRequestHandler):
                 default_rem = data.get("default_remittance", "Mitgliedsbeitrag")
                 payments, stats = parse_csv_content(csv_content, default_remittance=default_rem)
                 if "error" in stats:
+                    logger.warning("Web API: CSV-Verarbeitung fehlgeschlagen: %s", stats["error"])
                     self.send_json(200, {"error": stats["error"], "payments": [], "stats": stats})
                     return
+                logger.info(
+                    "Web API: CSV verarbeitet: %d Zeilen (%d gueltig, %d ungueltig, Summe: %s)",
+                    stats.get("total_records", 0),
+                    stats.get("valid_records", 0),
+                    stats.get("invalid_records", 0),
+                    stats.get("total_amount_formatted", "0,00"),
+                )
                 res = {
                     "payments": [p.to_dict() for p in payments],
                     "stats": stats
                 }
                 self.send_json(200, res)
             except Exception as e:
+                logger.error("Web API: Fehler bei /api/parse-csv: %s", str(e))
                 self.send_json(400, {"error": str(e)})
 
         elif path == "/api/config":
@@ -705,6 +714,7 @@ def run_web_server(port: int = 8080, open_browser: bool = True):
             print(f" URL: {url}")
             print(f" Drücken Sie Ctrl+C im Terminal zum Beenden.")
             print(f"===============================================================")
+            logger.info("Web-Server gestartet auf %s", url)
             if open_browser:
                 webbrowser.open(url)
             httpd.serve_forever()
