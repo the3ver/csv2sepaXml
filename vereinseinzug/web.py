@@ -266,34 +266,37 @@ if (!dateInput.value) {
   dateInput.value = d.toISOString().split("T")[0];
 }
 
-// Load config from localStorage or server
+function applyConfig(cfg) {
+  if (!cfg) return;
+  if (cfg.creditor_name) document.getElementById("cfg-creditor-name").value = cfg.creditor_name;
+  if (cfg.creditor_id) document.getElementById("cfg-creditor-id").value = cfg.creditor_id;
+  if (cfg.creditor_iban) document.getElementById("cfg-creditor-iban").value = cfg.creditor_iban;
+  if (cfg.creditor_bic) document.getElementById("cfg-creditor-bic").value = cfg.creditor_bic || "";
+  if (cfg.collection_date) document.getElementById("cfg-collection-date").value = cfg.collection_date;
+  if (cfg.sequence_type) document.getElementById("cfg-sequence-type").value = cfg.sequence_type;
+  if (cfg.default_remittance) document.getElementById("cfg-default-remittance").value = cfg.default_remittance;
+}
+
 function loadConfig() {
-  const saved = localStorage.getItem("sepa_club_config");
-  if (saved) {
-    try {
-      const cfg = JSON.parse(saved);
-      if (cfg.creditor_name) document.getElementById("cfg-creditor-name").value = cfg.creditor_name;
-      if (cfg.creditor_id) document.getElementById("cfg-creditor-id").value = cfg.creditor_id;
-      if (cfg.creditor_iban) document.getElementById("cfg-creditor-iban").value = cfg.creditor_iban;
-      if (cfg.creditor_bic) document.getElementById("cfg-creditor-bic").value = cfg.creditor_bic || "";
-      if (cfg.collection_date) document.getElementById("cfg-collection-date").value = cfg.collection_date;
-      if (cfg.sequence_type) document.getElementById("cfg-sequence-type").value = cfg.sequence_type;
-      if (cfg.default_remittance) document.getElementById("cfg-default-remittance").value = cfg.default_remittance;
-    } catch(e) {}
-  } else {
-    // Try fetching from server
-    fetch("/api/config").then(r => r.json()).then(cfg => {
-      if (cfg && cfg.creditor_name) {
-        document.getElementById("cfg-creditor-name").value = cfg.creditor_name;
-        document.getElementById("cfg-creditor-id").value = cfg.creditor_id;
-        document.getElementById("cfg-creditor-iban").value = cfg.creditor_iban;
-        document.getElementById("cfg-creditor-bic").value = cfg.creditor_bic || "";
-        if (cfg.collection_date) document.getElementById("cfg-collection-date").value = cfg.collection_date;
-        if (cfg.sequence_type) document.getElementById("cfg-sequence-type").value = cfg.sequence_type;
-        if (cfg.default_remittance) document.getElementById("cfg-default-remittance").value = cfg.default_remittance;
+  fetch("/api/config")
+    .then(r => r.json())
+    .then(serverCfg => {
+      if (serverCfg && serverCfg.creditor_name) {
+        applyConfig(serverCfg);
+        localStorage.setItem("sepa_club_config", JSON.stringify(serverCfg));
+      } else {
+        const saved = localStorage.getItem("sepa_club_config");
+        if (saved) {
+          try { applyConfig(JSON.parse(saved)); } catch(e) {}
+        }
       }
-    }).catch(()=>{});
-  }
+    })
+    .catch(() => {
+      const saved = localStorage.getItem("sepa_club_config");
+      if (saved) {
+        try { applyConfig(JSON.parse(saved)); } catch(e) {}
+      }
+    });
 }
 loadConfig();
 
