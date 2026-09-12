@@ -183,12 +183,13 @@ HTML_PAGE = """<!DOCTYPE html>
   <!-- 2. CSV UPLOAD -->
   <div class="card">
     <div class="card-title">2. Mitglieder-CSV importieren</div>
-    <div class="dropzone" id="dropzone" style="position: relative; overflow: hidden;">
+    <div class="dropzone" id="dropzone" style="position: relative; overflow: hidden; cursor: pointer;">
       <input type="file" id="file-input" accept=".csv,text/csv,text/plain" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;">
       <div class="dropzone-icon">📁</div>
       <p style="font-weight: 700; color: #1e293b; font-size: 15px;">CSV-Datei hier ablegen oder klicken zum Auswählen</p>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Unterstützt Spalten wie Name, IBAN, BIC, Betrag in Euro, Mandatsreferenz, Mandatsdatum.</p>
-      <span class="btn btn-primary" style="pointer-events: none;">📄 Datei vom Computer auswählen</span>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">Unterstützt Spalten wie Name, IBAN, BIC, Betrag in Euro, Mandatsreferenz, Mandatsdatum.</p>
+      <button type="button" class="btn btn-primary" style="pointer-events: none; position: relative; z-index: 5;">📄 Datei vom Computer auswählen</button>
+      <div id="file-status" class="hidden" style="margin-top: 12px; font-weight: 600; color: var(--primary); font-size: 13px;"></div>
     </div>
     <div class="btn-group">
       <button class="btn btn-secondary" id="btn-download-template">📥 Muster-Vorlage (CSV) herunterladen</button>
@@ -325,27 +326,40 @@ function getConfig() {
 }
 
 // Dropzone handling
-const dropzone = document.getElementById("dropzone");
-const fileInput = document.getElementById("file-input");
-
 fileInput.addEventListener("dragenter", () => dropzone.classList.add("dragover"));
 fileInput.addEventListener("dragover", (e) => { e.preventDefault(); dropzone.classList.add("dragover"); });
 fileInput.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
-fileInput.addEventListener("drop", () => dropzone.classList.remove("dragover"));
+fileInput.addEventListener("drop", (e) => {
+  dropzone.classList.remove("dragover");
+  if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+    handleFile(e.dataTransfer.files[0]);
+  }
+});
 
 fileInput.addEventListener("change", (e) => {
   if (e.target.files && e.target.files.length) {
     handleFile(e.target.files[0]);
-    // Reset value so selecting the same file again triggers change event
-    fileInput.value = "";
   }
 });
 
 function handleFile(file) {
+  if (!file) return;
+  const statusEl = document.getElementById("file-status");
+  if (statusEl) {
+    statusEl.innerText = "📂 " + file.name + " (" + (file.size < 1024 ? file.size + " B" : Math.round(file.size / 1024) + " KB") + ") geladen";
+    statusEl.classList.remove("hidden");
+  }
+
   const reader = new FileReader();
   reader.onload = (ev) => {
     currentCsvContent = ev.target.result;
     parseCsv(currentCsvContent);
+  };
+  reader.onerror = (ev) => {
+    alert("Fehler beim Lesen der Datei: " + (ev.target.error ? ev.target.error.message : "Unbekannt"));
+  };
+  reader.onloadend = () => {
+    try { fileInput.value = ""; } catch(e) {}
   };
   reader.readAsText(file);
 }
