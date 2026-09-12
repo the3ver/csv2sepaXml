@@ -111,7 +111,7 @@ HTML_PAGE = """<!DOCTYPE html>
 <body>
 <div class="container">
   <header>
-    <div class="header-badge">EPC SEPA Standard 2024+ (pain.008.001.08)</div>
+    <div class="header-badge">EPC SEPA Standard 2024+ (pain.008.001.08) <span style="opacity: 0.85; font-weight: normal; margin-left: 6px;">v0.2.0</span></div>
     <h1>SEPA-Lastschrift Generator für Vereine</h1>
     <p class="subtitle">Erstellen Sie aus einer Mitglieder-CSV bankenkonforme SEPA-Basislastschriften mit integrierter XSD-Validierung.</p>
   </header>

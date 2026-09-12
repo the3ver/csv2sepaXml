@@ -1,0 +1,42 @@
+﻿# Changelog
+
+Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
+
+Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/)
+und dieses Projekt folgt den Richtlinien von [Semantic Versioning](https://semver.org/lang/de/).
+
+---
+
+## [0.2.0] - 2026-09-12
+
+### Hinzugefügt
+- **Eigenständige Windows-App (`csv2sepaXml.exe`)**:
+  - Startet per Doppelklick ohne Python-Installation direkt im Browser.
+  - Windows-Versionsressource in der `.exe` verankert (Dateiversion: `0.2.0.0`, Produktname: `csv2sepaXml`).
+- **Lokale Browser-Oberfläche**:
+  - Intuitive Weboberfläche mit Drag & Drop CSV-Dateiupload.
+  - Statusanzeige sofort beim Ablegen oder Auswählen einer Datei.
+  - Echtzeit-Statistiken (geladene Datensätze, gültige Lastschriften, fehlerhafte Datensätze, Gesamteinzugssumme).
+  - Interaktive Prüftabelle mit Filter-Reitern (*Alle*, *Nur Gültige*, *Fehlerhafte*).
+  - 1-Klick-Download für die generierte XML-Datei und das Prüfprotokoll.
+- **SEPA-Konformität (pain.008.001.08)**:
+  - Vollständige Unterstützung des aktuellen ISO 20022 EPC SEPA Standards `pain.008.001.08` (ab 2024/2025).
+  - Standard-Sequenztyp `RCUR` (wiederkehrend / Folgelastschrift) sowie Unterstützung für `FRST`, `OOFF` und `FNAL`.
+  - Optionale BIC-Behandlung für DE/EWR-Konten gemäß SEPA-Verordnung (IBAN-Only).
+  - Sammelbuchungskennzeichen (`<BtchBookg>true</BtchBookg>`) für Einzel- oder Sammelposten auf dem Kontoauszug.
+  - Automatische Validierung gegen das offizielle ISO 20022 Schema (`schema/pain.008.001.08.xsd`).
+  - SEPA-Zeichensatzkonforme Bereinigung von Umlauten und Sonderzeichen.
+- **Intelligenter CSV-Parser**:
+  - Automatische Trennzeichenerkennung (Semikolon `;`, Komma `,`, Tabulator).
+  - Flexible Erkennung deutscher Spaltenüberschriften (z.B. *„Beitrag in Euro“*, *„Betrag“*, *„Mandatsreferenz“*, *„Mandatsdatum“*).
+  - Automatische Bereinigung von Leerzeichen in IBANs (z.B. `DE69 5001 0517 ...`).
+  - Unterstützung für deutsche Zahlenformate (z.B. `25,00 €`).
+  - Automatische Zeichensatzerkennung (UTF-8, UTF-8-BOM, CP1252 / Windows-1252).
+- **Validierung & Sicherheit**:
+  - Modulo-97 IBAN-Prüfsummenberechnung (ISO 7064).
+  - Gläubiger-ID-Prüfung.
+  - Revisionssicheres Kassenprüf-Protokoll (`sepa_einzugsprotokoll_*.txt`) mit SHA-256 Prüfsumme und Gesamtkontrolle für Kassenprüfer.
+  - Datenschutzkonforme, rein technische Debug-Logdatei (`vereinseinzug.log`) ohne personenbezogene Daten.
+- **Dokumentation & Community**:
+  - Schritt-für-Schritt Online-Anleitung für GitHub Pages (`docs/index.html`) inklusive Screenshots.
+  - Offizielle Open-Source-Lizenzierung unter der **MIT-Lizenz** (`LICENSE`).

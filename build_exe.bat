@@ -11,8 +11,8 @@ if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
 )
 
-echo Erstelle eigenstaendige csv2sepaXml.exe...
-python -m PyInstaller --clean --noconfirm --onefile --name "csv2sepaXml" --add-data "schema/pain.008.001.08.xsd;schema" --hidden-import="xmlschema" --hidden-import="elementpath" sepa_generator.py
+echo Erstelle eigenstaendige csv2sepaXml.exe (v0.2.0)...
+python -m PyInstaller --clean --noconfirm --onefile --name "csv2sepaXml" --version-file "file_version_info.txt" --add-data "schema/pain.008.001.08.xsd;schema" --hidden-import="xmlschema" --hidden-import="elementpath" sepa_generator.py
 
 if %ERRORLEVEL% equ 0 (
     echo.

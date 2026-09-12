@@ -1,6 +1,7 @@
 # SEPA-Lastschrift Generator (pain.008.001.08) für Vereine
 
 [![GitHub Pages](https://img.shields.io/badge/Dokumentation-GitHub%20Pages-2563eb?style=for-the-badge)](https://the3ver.github.io/csv2sepaXml/)
+[![Version](https://img.shields.io/badge/Version-0.2.0-orange?style=for-the-badge)](CHANGELOG.md)
 [![SEPA ISO 20022](https://img.shields.io/badge/SEPA-pain.008.001.08-059669?style=for-the-badge)](https://www.europeanpaymentscouncil.eu/)
 [![License: MIT](https://img.shields.io/badge/Lizenz-MIT-blue.svg?style=for-the-badge)](LICENSE)
 

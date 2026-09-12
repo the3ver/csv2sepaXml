@@ -13,13 +13,20 @@ from .generator import SepaPain008Generator
 from .web import run_web_server
 from .logger import logger
 from .protocol import generate_audit_protocol
+from . import __version__
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="SEPA Lastschrift pain.008.001.08 XML-Generator für Vereine"
+        description=f"SEPA Lastschrift pain.008.001.08 XML-Generator für Vereine (v{__version__})"
     )
 
+    parser.add_argument(
+        "--version", "-v",
+        action="version",
+        version=f"csv2sepaXml v{__version__}",
+        help="Programmversion anzeigen",
+    )
     parser.add_argument(
         "--web",
         action="store_true",
