@@ -7,6 +7,15 @@ und dieses Projekt folgt den Richtlinien von [Semantic Versioning](https://semve
 
 ---
 
+## [0.3.2] - 2026-09-13
+
+### Geändert & Aktualisiert
+- **Abhängigkeit aktualisiert**:
+  - Mindestanforderung für `xmlschema` in `requirements.txt` von `>=3.0.0` auf die neueste stabile Version `>=4.3.2` angehoben.
+  - Vollständige Validierung der XSD-Schemata (`pain.008.001.08.xsd`) und Test-Suite erfolgreich bestätigt.
+
+---
+
 ## [0.3.1] - 2026-09-12
 
 ### Behoben & Verbessert
